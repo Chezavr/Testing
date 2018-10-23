@@ -11,7 +11,7 @@ pipeline {
         pollSCM('* * * * *')
     }
 
-    stages{
+    stages {
         stage('Build') {
             steps {
                 sh 'mvn clean package'
@@ -19,25 +19,7 @@ pipeline {
             post {
                 success {
                     echo 'Now Archiving...'
-                    archiveArtifacts artifacts: "${params.relative_target_path}/*.war"
-                }
-            }
-        }
-
-        stage ('Deployments') {
-            parallel {
-                stage ('Deploy to Staging') {
-                    steps {
-                        sh "rm ${params.tomcat_stage}/webapps/webapp.war"
-                        sh "cp -i ${params.relative_target_path}/*.war ${params.tomcat_stage}/webapps"
-                    }
-                }
-
-                stage ("Deploy to Production") {
-                    steps {
-                        sh "rm ${params.tomcat_prod}/webapps/webapp.war"
-                        sh "cp -i ${params.relative_target_path}/*.war ${params.tomcat_prod}/webapps"
-                    }
+                    archiveArtifacts artifacts: "${params.relative_target_path}/*.jar"
                 }
             }
         }
